@@ -12,6 +12,7 @@ const yoga = createYoga({
         _id: ID!
         name: String!
         categoryId: Int!
+        ingredients: [Ingredient!]!
       }
       type Ingredient {
         _id: ID!
@@ -21,7 +22,7 @@ const yoga = createYoga({
       type Query {
         hello: String
         categories: [Category!]!
-        ingredients: [Ingredient!]!
+        allIngredients: [Ingredient!]!
       }
       type Mutation {
         getFileName(file: File!): String
@@ -53,8 +54,8 @@ const yoga = createYoga({
           console.log("Returning results from categories resolver", result);
           return result;
         },
-        async ingredients(root, args, context): Promise<any> {
-          console.log("In ingredients resolver");
+        async allIngredients(root, args, context): Promise<any> {
+          console.log("In all ingredients resolver");
           const client = getClient();
           const db = client.db("definitions");
           const collection = db.collection("ingredients");
@@ -64,6 +65,35 @@ const yoga = createYoga({
             })
             .toArray();
           return ingredients;
+        },
+      },
+      Category: {
+        async ingredients(parent, root, args, context): Promise<any> {
+          console.log("Resolving ingredients for category:", parent);
+          const client = getClient();
+          const db = client.db("definitions");
+          const collection = db.collection("ingredients");
+          const ingredients = await collection
+            .find({
+              $and: [
+                {
+                  categoryId: parent.categoryId,
+                },
+                { name: { $exists: true } },
+              ],
+            })
+            .toArray();
+          console.log(
+            "Returning ingredients for category:",
+            parent,
+            "with result:",
+            ingredients
+          );
+          return ingredients.map((ing: any) => ({
+            id_: ing._id,
+            name: ing.name || "Missing Name!",
+            categoryId: ing.categoryId,
+          }));
         },
       },
     },
