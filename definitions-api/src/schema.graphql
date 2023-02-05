@@ -1,23 +1,24 @@
 scalar File
-
 type Category {
-      _id: ID!
-      name: String!
-      categoryId: Int!
+  _id: ID!
+  name: String!
+  categoryId: Int!
+  ingredients: [Ingredient!]!
 }
-
 type Ingredient {
-      _id: ID!
-      name: String!
-      categoryId: Int!
+  _id: ID!
+  name: String!
+  categoryId: Int!
+  category: Category!
 }
-
 type Query {
-      hello: String
-      categories: [Category!]!
-      ingredients: [Ingredient!]!
+  hello: String
+  categories: [Category!]!
+  allIngredients: [Ingredient!]!
 }
-
-type Test {
-    id: ID!
+type Mutation {
+  getFileName(file: File!): String
+}
+type Subscription {
+  countdown(from: Int!): Int!
 }
