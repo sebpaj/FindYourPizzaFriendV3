@@ -1,0 +1,12 @@
+overwrite: true
+schema:
+  - "./schema.graphql"
+generates:
+  src/generated/types.ts:
+    plugins:
+      - typescript
+    config:
+      scalars:
+        DateTime: "string"
+        JSON: "any"
+        Long: "number"

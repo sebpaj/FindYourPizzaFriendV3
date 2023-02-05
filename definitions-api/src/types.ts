@@ -1,7 +1,4 @@
 import fs from "fs";
 import path from "path";
 
-export const typeDefs = fs.readFileSync(
-  path.join(__dirname, "schema.graphql"),
-  "utf-8"
-);
+export const typeDefs = fs.readFileSync(path.join("./schema.graphql"), "utf-8");

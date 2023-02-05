@@ -8,6 +8,8 @@
     "ts-node": "^10.9.1"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^3.0.0",
+    "@graphql-codegen/typescript": "^3.0.0",
     "@types/express": "^4.17.16",
     "nodemon": "^2.0.20",
     "prettier": "^2.8.3",
@@ -15,6 +17,8 @@
   },
   "scripts": {
     "start": "nodemon src/index.ts",
-    "prettier": "prettier --write"
+    "generate": "graphql-code-generator",
+    "prettier": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,md,graphql}\"",
+    "prettier:schema": "prettier --write schema.graphql"
   }
 }

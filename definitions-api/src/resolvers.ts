@@ -1,10 +1,11 @@
 import { getClient } from "./database";
+import { Category, Ingredient } from "./generated/types";
 
 export const resolvers = {
   Query: {
     hello: () => "world",
-    async categories(root: any, args: any, context: any): Promise<any> {
-      console.log("In categories resolver");
+    async categories(root: any, args: any, context: any): Promise<Category[]> {
+      console.log("In categories resolver", root);
       const client = getClient();
       const db = client.db("definitions");
       const collection = db.collection("ingredients");
@@ -23,7 +24,11 @@ export const resolvers = {
       console.log("Returning results from categories resolver", result);
       return result;
     },
-    async allIngredients(root: any, args: any, context: any): Promise<any> {
+    async allIngredients(
+      root: any,
+      args: any,
+      context: any
+    ): Promise<Ingredient[]> {
       console.log("In all ingredients resolver");
       const client = getClient();
       const db = client.db("definitions");
@@ -38,11 +43,11 @@ export const resolvers = {
   },
   Category: {
     async ingredients(
-      parent: { categoryId: any },
+      parent: Ingredient,
       root: any,
       args: any,
       context: any
-    ): Promise<any> {
+    ): Promise<Ingredient[]> {
       console.log("Resolving ingredients for category:", parent);
       const client = getClient();
       const db = client.db("definitions");
@@ -57,8 +62,11 @@ export const resolvers = {
           ],
         })
         .toArray();
-      console.log("Returning ingredients for catwith result:", ingredients);
-      return ingredients.map((ing: any) => ({
+      console.log(
+        "Returning ingredients for category with result:",
+        ingredients
+      );
+      return ingredients.map((ing: Ingredient) => ({
         id_: ing._id,
         name: ing.name || "Missing Name!",
         categoryId: ing.categoryId,
@@ -67,11 +75,11 @@ export const resolvers = {
   },
   Ingredient: {
     async category(
-      parent: any,
+      parent: Category,
       root: any,
       args: any,
       context: any
-    ): Promise<any> {
+    ): Promise<Category> {
       console.log("Resolving category for ingredient", parent);
       const client = getClient();
       const db = client.db("definitions");
