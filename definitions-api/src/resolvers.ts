@@ -3,7 +3,7 @@ import { Category, Ingredient } from "./generated/types";
 
 export const resolvers = {
   Query: {
-    hello: () => "world",
+    hello: () => "Hello World",
     async categories(root: any, args: any, context: any): Promise<Category[]> {
       console.log("In categories resolver", root);
       const client = getClient();
