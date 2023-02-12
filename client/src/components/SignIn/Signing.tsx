@@ -8,13 +8,40 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import LocalPizzaIcon from "@mui/icons-material/LocalPizza";
 import Typography from "@mui/material/Typography";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import { validateEmail } from "./utils";
 
 const themeDark = createTheme({
   palette: {
     text: {
       primary: "#1E88E5",
+    },
+  },
+});
+
+const TextFieldStyled = styled(TextField)({
+  "& label.Mui-focused": {
+    color: "#1E88E5",
+    font: "#1E88E5",
+  },
+  "& .MuiInputBase-root": {
+    color: "#1E88E5",
+    font: "#1E88E5",
+  },
+  "& .MuiInput-underline:after": {
+    borderBottomColor: "#1E88E5",
+    color: "#1E88E5",
+  },
+  "& .MuiOutlinedInput-root": {
+    "& fieldset": {
+      borderColor: "#1E88E5",
+      color: "#1E88E5",
+    },
+    "&:hover fieldset": {
+      borderColor: "#1E88E5",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#1E88E5",
     },
   },
 });
@@ -101,25 +128,29 @@ export default function SignInSide(props: Props) {
               onSubmit={handleSubmit}
               sx={{ mt: 1 }}
             >
-              <TextField
+              <TextFieldStyled
                 margin="normal"
                 required
                 fullWidth
                 id="email"
                 label="Email Address"
                 name="email"
-                autoComplete="email"
+                autoComplete="off"
                 autoFocus
                 error={error}
+                InputLabelProps={{
+                  style: {
+                    color: error ? "red" : "#1E88E5",
+                  },
+                }}
                 InputProps={{
                   style: {
                     borderColor: error ? "red" : "initial",
-                    backgroundColor: "#333",
-                    font: "#1E88E5",
+                    color: error ? "red" : "#1E88E5",
                   },
                 }}
               />
-              <TextField
+              <TextFieldStyled
                 margin="normal"
                 required
                 fullWidth
@@ -128,9 +159,13 @@ export default function SignInSide(props: Props) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                InputLabelProps={{
+                  style: {
+                    color: "#1E88E5",
+                  },
+                }}
                 inputProps={{
                   maxLength: 6,
-                  backgroundColor: "#333",
                   font: "#1E88E5",
                 }}
               />
