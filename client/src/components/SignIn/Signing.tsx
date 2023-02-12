@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -11,15 +11,25 @@ import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { validateEmail } from "./utils";
 
-const theme = createTheme();
+const themeDark = createTheme({
+  palette: {
+    text: {
+      primary: "#1E88E5",
+    },
+  },
+});
 
 interface Props {
   setIsLoggedIn: (arg0: boolean) => void;
+  setEmailAddress: (arg0: string) => void;
 }
 
 export default function SignInSide(props: Props) {
+  const { setIsLoggedIn, setEmailAddress } = props;
+
+  const [error, setError] = useState(false);
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    const { setIsLoggedIn } = props;
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const email = data.get("email") as string;
@@ -29,15 +39,21 @@ export default function SignInSide(props: Props) {
       return;
     } else if (!validateEmail(email)) {
       console.error("Email is not valid");
+      setError(true);
       return;
     } else {
       setIsLoggedIn(true);
+      setEmailAddress(email);
     }
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+    <ThemeProvider theme={themeDark}>
+      <Grid
+        container
+        component="main"
+        sx={{ height: "100vh", background: "black" }}
+      >
         <CssBaseline />
         <Grid
           item
@@ -47,15 +63,20 @@ export default function SignInSide(props: Props) {
           sx={{
             backgroundImage: "url(https://source.unsplash.com/random)",
             backgroundRepeat: "no-repeat",
-            backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
             backgroundSize: "cover",
             backgroundPosition: "center",
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+        <Grid
+          item
+          xs={12}
+          sm={8}
+          md={5}
+          component={Paper}
+          elevation={6}
+          bgcolor="#121212"
+          square
+        >
           <Box
             sx={{
               my: 8,
@@ -89,6 +110,14 @@ export default function SignInSide(props: Props) {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                error={error}
+                InputProps={{
+                  style: {
+                    borderColor: error ? "red" : "initial",
+                    backgroundColor: "#333",
+                    font: "#1E88E5",
+                  },
+                }}
               />
               <TextField
                 margin="normal"
@@ -99,7 +128,11 @@ export default function SignInSide(props: Props) {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                inputProps={{ maxLength: 6 }}
+                inputProps={{
+                  maxLength: 6,
+                  backgroundColor: "#333",
+                  font: "#1E88E5",
+                }}
               />
               <Button
                 type="submit"
