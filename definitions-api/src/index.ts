@@ -3,7 +3,7 @@ import { createSchema, createYoga } from "graphql-yoga";
 
 import { getClient } from "./database";
 import { resolvers } from "./resolvers";
-import { typeDefs } from "./types";
+import { typeDefs } from "./typeDefs";
 
 const yoga = createYoga({
   schema: createSchema({
