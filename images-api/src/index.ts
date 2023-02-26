@@ -1,56 +1,23 @@
 import express from "express";
-import { createSchema, createYoga } from "graphql-yoga";
 import path from "path";
-
-import { resolve } from "path";
-import { promises as fs } from "fs";
-
-const publicPath = resolve("public/images");
-
-const getRandomImage = async (): Promise<{
-  name: String;
-  data: String;
-}> => {
-  const files = await fs.readdir(publicPath);
-  // filter only image files
-  const imageFiles = files.filter((file) =>
-    [".jpg", ".jpeg", ".png", ".gif"].includes(path.extname(file))
-  );
-  // pick a random image
-  const randomImage = imageFiles[Math.floor(Math.random() * imageFiles.length)];
-  console.log("my random image is", randomImage);
-  const data = await fs.readFile(resolve(publicPath, randomImage), "utf-8");
-  return { name: randomImage, data };
-};
-
-const schema = createSchema({
-  typeDefs: /* GraphQL */ `
-    type Image {
-      name: String!
-      data: String!
-    }
-    type Query {
-      hello: String
-      getImage: Image!
-    }
-  `,
-  resolvers: {
-    Query: {
-      hello: () => "world",
-      getImage: () => getRandomImage(),
-    },
-  },
-});
+import { IMAGES_DIR, PARENT_DIR } from "./constants";
+import { getRandomImage } from "./resources";
 
 const app = express();
+const port = 3001;
 
-const yoga = createYoga({
-  schema,
-});
+app.use(express.static(IMAGES_DIR));
 
-// Bind GraphQL Yoga to `/graphql` endpoint
-app.use("/graphql", yoga);
+app.get(
+  "/random-image",
+  async (req: express.Request, res: express.Response) => {
+    const imagePath = await getRandomImage();
+    const absoluteImagePath = path.join(PARENT_DIR, IMAGES_DIR, imagePath);
+    console.log("Absolute image path to send file", absoluteImagePath);
+    res.sendFile(absoluteImagePath);
+  }
+);
 
-app.listen(4001, () => {
-  console.log("Running a GraphQL API server at http://localhost:4001/graphql");
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
