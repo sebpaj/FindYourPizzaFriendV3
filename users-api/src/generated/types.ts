@@ -28,13 +28,18 @@ export type Query = {
   hello: Scalars['String'];
 };
 
+
+export type QueryGetUserArgs = {
+  id: Scalars['ID'];
+};
+
 export type User = {
   __typename?: 'User';
   _id: Scalars['ID'];
   email: Scalars['String'];
   firstName: Scalars['String'];
   lastName: Scalars['String'];
-  pin: Scalars['Int'];
+  token?: Maybe<Scalars['String']>;
   username: Scalars['String'];
 };
 
