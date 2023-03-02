@@ -1,5 +1,5 @@
 import { FindOptions, ObjectId } from "mongodb";
-import sign from "jsonwebtoken";
+import bcrypt from "bcrypt";
 import { getUsersCollection } from "./database";
 import { User } from "./generated/types";
 import { generateToken } from "./auth/auth";
@@ -10,12 +10,24 @@ const createUserResolver = async (
   context: any
 ): Promise<User | null> => {
   const {
-    user: { pin, ...userArgs },
+    user: { pin, email, ...userArgs },
   } = args;
   console.log("createUserResolver args", userArgs);
 
   const userCollection = await getUsersCollection();
-  const createdUserData = await userCollection.insertOne({ pin, ...userArgs });
+
+  const existingUser = await userCollection.findOne({ email });
+
+  if (existingUser) {
+    throw new Error("User with that email already exists!");
+  }
+
+  const hashedPin = await bcrypt.hash(pin.toString(), 10);
+  const createdUserData = await userCollection.insertOne({
+    pin: hashedPin,
+    email,
+    ...userArgs,
+  });
 
   console.log("User created", createdUserData);
   const userId = createdUserData.insertedId;
@@ -37,15 +49,12 @@ const getUserResolver = async (
   console.log("getUserResolver args", root, id);
 
   const userCollection = await getUsersCollection();
-  const options: FindOptions<Document> = {
-    projection: { pin: 0 },
-  };
+
   const userId = new ObjectId(id);
 
-  const user = await userCollection.findOne(
-    { _id: userId as unknown as string },
-    options
-  );
+  const user = await userCollection.findOne({
+    _id: userId as unknown as string,
+  });
   console.log("Returning user", user);
   return user;
 };
@@ -56,7 +65,7 @@ const loginMutationResolver = async (
   context: any
 ): Promise<User | null> => {
   const { email, pin } = args;
-  console.log("login mutation started for", email);
+  console.log("Login mutation started for", email);
 
   const userCollection = await getUsersCollection();
   const user = await userCollection.findOne({ email });
@@ -64,7 +73,8 @@ const loginMutationResolver = async (
   if (!user) {
     throw new Error("Invalid login");
   }
-  const pinMatch = pin === user.pin;
+
+  const pinMatch = await bcrypt.compare(pin.toString(), user.pin);
 
   if (!pinMatch) {
     throw new Error("Invalid login");
