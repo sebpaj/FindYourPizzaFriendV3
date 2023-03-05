@@ -10,6 +10,8 @@ import LocalPizzaIcon from "@mui/icons-material/LocalPizza";
 import Typography from "@mui/material/Typography";
 import { createTheme, styled, ThemeProvider } from "@mui/material/styles";
 import { validateEmail } from "./utils";
+import { useMutation } from "@apollo/client";
+import { CREATE_USER_MUTATION } from "../../queries/signin/signin";
 
 const themeDark = createTheme({
   palette: {
@@ -56,6 +58,18 @@ export default function SignInSide(props: Props) {
 
   const [error, setError] = useState(false);
 
+  const [createUser, { loading, error: createUserError }] = useMutation(
+    CREATE_USER_MUTATION,
+    {
+      onCompleted: (data) => {
+        if (!createUserError) {
+          setEmailAddress(data.createUser.email);
+          setIsLoggedIn(true);
+        }
+      },
+    }
+  );
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -69,8 +83,19 @@ export default function SignInSide(props: Props) {
       setError(true);
       return;
     } else {
-      setIsLoggedIn(true);
-      setEmailAddress(email);
+      createUser({
+        variables: {
+          user: {
+            email,
+            pin: Number(pin),
+            firstName: "",
+            lastName: "",
+            username: "",
+          },
+        },
+      }).catch((err) => {
+        console.log("Error during creation of user", err);
+      });
     }
   };
 
@@ -115,13 +140,12 @@ export default function SignInSide(props: Props) {
           >
             <Typography component="h1" variant="h3">
               Find Your Pizza Friend!
+              {loading && <p>Loading...</p>}
             </Typography>
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LocalPizzaIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
+
             <Box
               component="form"
               noValidate
@@ -175,7 +199,7 @@ export default function SignInSide(props: Props) {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In
+                Sign In / Sign up
               </Button>
             </Box>
           </Box>
