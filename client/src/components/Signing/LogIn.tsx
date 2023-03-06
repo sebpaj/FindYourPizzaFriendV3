@@ -53,7 +53,7 @@ interface Props {
   setEmailAddress: (arg0: string) => void;
 }
 
-export default function SignInSide(props: Props) {
+export default function LogInPage(props: Props) {
   const { setIsLoggedIn, setEmailAddress } = props;
 
   const [error, setError] = useState(false);
@@ -199,8 +199,11 @@ export default function SignInSide(props: Props) {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Sign In / Sign up
+                Log In
               </Button>
+              <Typography component="h1" variant="h6">
+                Do not have have account? Create it here.
+              </Typography>
             </Box>
           </Box>
         </Grid>

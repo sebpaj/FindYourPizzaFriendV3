@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { styled } from "@mui/material/styles";
-import SignInSide from "../SignIn/Signing";
 import HeaderH1 from "./Header";
+import LogInPage from "../Signing/LogIn";
 
 const Div = styled("div")({
   margin: 0,
@@ -24,7 +24,7 @@ export default function MainPage() {
           <HeaderH1 emailAddress={emailAddress} />
         </Div>
       ) : (
-        <SignInSide
+        <LogInPage
           setIsLoggedIn={setIsLoggedIn}
           setEmailAddress={setEmailAddress}
         />
