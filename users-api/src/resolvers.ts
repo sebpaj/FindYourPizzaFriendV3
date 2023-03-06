@@ -3,6 +3,7 @@ import bcrypt from "bcrypt";
 import { getUsersCollection } from "./database";
 import { User } from "./generated/types";
 import { generateToken } from "./auth/auth";
+import { GraphQLError } from "graphql";
 
 const createUserResolver = async (
   _: any,
@@ -19,7 +20,7 @@ const createUserResolver = async (
   const existingUser = await userCollection.findOne({ email });
 
   if (existingUser) {
-    throw new Error("User with that email already exists!");
+    throw new GraphQLError("User with that email already exists!");
   }
 
   const hashedPin = await bcrypt.hash(pin.toString(), 10);
@@ -55,6 +56,11 @@ const getUserResolver = async (
   const user = await userCollection.findOne({
     _id: userId as unknown as string,
   });
+
+  if (!user) {
+    throw new GraphQLError(`Can not find user with id ${id}`);
+  }
+
   console.log("Returning user", user);
   return user;
 };
@@ -71,17 +77,18 @@ const loginMutationResolver = async (
   const user = await userCollection.findOne({ email });
 
   if (!user) {
-    throw new Error("Invalid login");
+    throw new GraphQLError(`Can not find user with email ${email}`);
   }
 
   const pinMatch = await bcrypt.compare(pin.toString(), user.pin);
 
   if (!pinMatch) {
-    throw new Error("Invalid login");
+    throw new GraphQLError("Pin is not correct");
   }
 
   const token = generateToken(user);
 
+  console.log("Generated token", token);
   return { ...user, token };
 };
 
