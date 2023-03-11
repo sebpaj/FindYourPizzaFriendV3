@@ -4,10 +4,10 @@ const mongoClient = new MongoClient(uri, { useNewUrlParser: true });
 
 mongoClient.connect((err: any) => {
   if (err) {
-    console.log("Could not connect to the database");
+    console.log("Could not connect to the database definitions-api");
     throw err;
   } else {
-    console.log("Connected to database");
+    console.log("Connected to database definitions-api");
     seedData(mongoClient);
   }
 });
