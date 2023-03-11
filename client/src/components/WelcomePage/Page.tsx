@@ -86,7 +86,11 @@ export default function OpeningPage(props: Props) {
                   setEmailAddress={setEmailAddress}
                 />
               ) : (
-                <LoginPage handleLinkClick={handleLinkClick} />
+                <LoginPage
+                  handleLinkClick={handleLinkClick}
+                  setIsLoggedIn={setIsLoggedIn}
+                  setEmailAddress={setEmailAddress}
+                />
               )}
             </div>
           </Box>

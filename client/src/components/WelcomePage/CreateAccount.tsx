@@ -7,7 +7,7 @@ import { TextFieldStyled } from "../CustomStyles/customStyled";
 import { validateEmail } from "./utils";
 import { useMutation } from "@apollo/client";
 
-import { CREATE_USER_MUTATION } from "../../queries/signin/signin";
+import { CREATE_USER_MUTATION } from "../../queries/welcomePage/mutations";
 
 interface Props {
   handleLinkClick: () => void;
@@ -38,8 +38,9 @@ export default function CreateAccount(props: Props) {
     const pin = data.get("password");
     const firstName = data.get("firstName");
     const lastName = data.get("lastName");
-    if (!email || !pin) {
-      console.error("Email and pin are required");
+
+    if (!email || !pin || !firstName || !lastName) {
+      console.error("Missing required fields");
       return;
     } else if (!validateEmail(email)) {
       console.error("Email is not valid");

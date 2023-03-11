@@ -12,4 +12,13 @@ const CREATE_USER_MUTATION = gql`
   }
 `;
 
-export { CREATE_USER_MUTATION };
+const LOG_IN_MUTATION = gql`
+  mutation LogIn($email: String!, $pin: Int!) {
+    login(email: $email, pin: $pin) {
+      token
+      email
+    }
+  }
+`;
+
+export { CREATE_USER_MUTATION, LOG_IN_MUTATION };
