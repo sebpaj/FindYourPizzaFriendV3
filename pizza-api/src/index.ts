@@ -1,10 +1,12 @@
 import express from "express";
 import { createYoga } from "graphql-yoga";
-import { schema } from "./schema";
+import { schema } from "./schema/schema";
 
 const app = express();
 
-const yoga = createYoga({ schema });
+const yoga = createYoga({
+  schema,
+});
 
 // Bind GraphQL Yoga to `/graphql` endpoint
 app.use("/graphql", yoga);
