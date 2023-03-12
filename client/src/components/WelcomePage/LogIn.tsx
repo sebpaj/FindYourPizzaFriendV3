@@ -103,7 +103,7 @@ export default function LoginPage(props: Props) {
           Log In
         </Button>
       </Box>
-      <a href="#" onClick={handleLinkClick}>
+      <a href="/#" onClick={handleLinkClick}>
         Do not have account? Create it here
       </a>
     </div>

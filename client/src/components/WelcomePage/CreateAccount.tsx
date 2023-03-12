@@ -157,7 +157,7 @@ export default function CreateAccount(props: Props) {
           Create account
         </Button>
       </Box>
-      <a href="#" onClick={handleLinkClick}>
+      <a href="/#" onClick={handleLinkClick}>
         Already have account? Log in
       </a>
     </div>
